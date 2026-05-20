@@ -51,21 +51,50 @@ def test_get_employees_returns_only_current_test_data(client, setup_office):
     response_empty = client.get("/employees/")
     assert len(response_empty.json()) == 0
 
-    # Dodajemy jednego pracownika
-    employee_data = {
+    employee_data_1 = {
         "name": "Anna",
         "surname": "Nowak",
         "email": "anna.nowak@example.com",
         "office_id": setup_office[0]["id"],
         "salary": "6000"
     }
-    client.post("/employees/", json=employee_data)
+    employee_data_2 = {
+        "name": "Jan",
+        "surname": "Kowalski",
+        "email": "j.kowalski@example.com",
+        "office_id": setup_office[0]["id"],
+        "salary": "5000"
+    }
 
-    # Teraz GET powinien zwrócić dokładnie 1 rekord
+    client.post("/employees/", json=employee_data_1)
+    client.post("/employees/", json=employee_data_2)
+
     response_get = client.get("/employees/")
     assert response_get.status_code == 200
-    assert len(response_get.json()) == 1
+    assert len(response_get.json()) == 2
     assert response_get.json()[0]["name"] == "Anna"
+    assert response_get.json()[1]["name"] == "Jan"
+
+def test_get_employees_returns_only_one(client, setup_office):
+    """Get a specific employee object"""
+    employee_data_1 = {
+        "name": "Anna",
+        "surname": "Nowak",
+        "email": "anna.nowak@example.com",
+        "office_id": setup_office[0]["id"],
+        "salary": "6000"
+    }
+
+    response = client.post("/employees/", json=employee_data_1)
+    data = response.json()
+
+    if isinstance(data, list):
+        data = data[0]
+
+    response_get = client.get(f"/employees/{data['id']}")
+
+    assert response_get.json()["name"] == "Anna"
+
 
 def test_get_non_existent_employee():
     """Get a non-existent employee object"""
