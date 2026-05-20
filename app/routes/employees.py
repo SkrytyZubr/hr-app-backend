@@ -56,7 +56,7 @@ def update_employee(update_employee: schema.EmployeeBase, id: uuid.UUID, db: Ses
 
     return employee
 
-@router.patch("/{id}", response_model=schema.EmployeeResponse)
+@router.patch("/{id}", status_code=status.HTTP_200_OK, response_model=schema.EmployeeResponse)
 def patch_employee(update_data: schema.UpdateEmployee, id: uuid.UUID, db: Session = Depends(get_db)):
     """Patch an employee"""
     employee_query = db.query(models.Employee).filter(models.Employee.id == id)

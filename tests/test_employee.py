@@ -117,6 +117,27 @@ def test_delete_employee_success(client, setup_office):
     delete_response = client.delete(f"/employees/{data['id']}")
     assert delete_response.status_code == 204
 
+def test_patch_employee_success(client, setup_office):
+    """Patch an employee object"""
+    employee_data_1 = {
+        "name": "Anna",
+        "surname": "Nowak",
+        "email": "anna.nowak@example.com",
+        "office_id": setup_office[0]["id"],
+        "salary": "6000"
+    }
+
+    response = client.post("/employees/", json=employee_data_1)
+    assert response.status_code == 201
+
+    data = response.json()
+    if isinstance(data, list):
+        data = data[0]
+
+    patch_response = client.patch(f"/employees/{data['id']}", json={"name": "Krystyna"})
+    assert patch_response.status_code == 200
+    assert patch_response.json()["name"] == "Krystyna"
+
 
 def test_get_non_existent_employee():
     """Get a non-existent employee object"""
