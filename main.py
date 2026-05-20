@@ -7,7 +7,5 @@ from app.routes.office import router as office_router
 
 app = FastAPI()
 
-db.Base.metadata.create_all(bind=engine)
-
 app.include_router(employees_router)
 app.include_router(office_router)

@@ -40,6 +40,7 @@ class EmployeeBase(BaseModel):
     name: str
     surname: str
     email: str
+    salary: Optional[int] = None
     office_id: Optional[int] = None
 
     model_config = {
@@ -51,6 +52,7 @@ class EmployeeResponse(BaseModel):
     name: str
     surname: str
     email: str
+    salary: Optional[int] = None
     office: Optional[OfficeResponse] = None
     created_at: datetime
 
@@ -67,4 +69,5 @@ class UpdateEmployee(BaseModel):
     name: Optional[str] = None
     surname: Optional[str] = None
     email: Optional[str] = None
+    salary: Optional[int] = None
     office_id: Optional[int] = None

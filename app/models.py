@@ -26,6 +26,7 @@ class Employee(Base):
     name = Column(String, nullable=False)
     surname = Column(String, nullable=False)
     email = Column(String, nullable=False)
+    salary = Column(String, nullable=True)
     office_id = Column(Integer, ForeignKey("office.id"), nullable=False)
     created_at = Column(TIMESTAMP(timezone=True), server_default=text('now()'))
 
