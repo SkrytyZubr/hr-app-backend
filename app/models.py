@@ -4,7 +4,7 @@ from sqlalchemy.orm import relationship
 
 from app.db import Base
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy import Column, Integer, String, TIMESTAMP, Boolean, text, ForeignKey
+from sqlalchemy import Column, Integer, String, TIMESTAMP, Boolean, text, ForeignKey, func
 
 
 class Office(Base):
@@ -28,7 +28,7 @@ class Employee(Base):
     email = Column(String, nullable=False)
     salary = Column(String, nullable=True)
     office_id = Column(Integer, ForeignKey("office.id"), nullable=False)
-    created_at = Column(TIMESTAMP(timezone=True), server_default=text('now()'))
+    created_at = Column(TIMESTAMP(timezone=True), server_default=func.now())
 
     office = relationship("Office", back_populates="employee")
 
