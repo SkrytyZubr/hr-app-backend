@@ -1,5 +1,7 @@
 import pytest
 from fastapi.testclient import TestClient
+from pygments.lexers import data
+
 from main import app
 
 client = TestClient(app)
@@ -94,6 +96,26 @@ def test_get_employees_returns_only_one(client, setup_office):
     response_get = client.get(f"/employees/{data['id']}")
 
     assert response_get.json()["name"] == "Anna"
+
+def test_delete_employee_success(client, setup_office):
+    """Delete an employee object"""
+    employee_data_1 = {
+        "name": "Anna",
+        "surname": "Nowak",
+        "email": "anna.nowak@example.com",
+        "office_id": setup_office[0]["id"],
+        "salary": "6000"
+    }
+
+    response = client.post("/employees/", json=employee_data_1)
+    assert response.status_code == 201
+
+    data = response.json()
+    if isinstance(data, list):
+        data = data[0]
+
+    delete_response = client.delete(f"/employees/{data['id']}")
+    assert delete_response.status_code == 204
 
 
 def test_get_non_existent_employee():
