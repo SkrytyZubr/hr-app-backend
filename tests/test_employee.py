@@ -6,16 +6,17 @@ from main import app
 
 client = TestClient(app)
 
+office_data = {
+    "country": "Poland",
+    "city": "Kraków",
+    "street": "Grodzka",
+    "number": "12A",
+    "phone": "+48501928348"
+}
+
 @pytest.fixture
 def setup_office():
     """Setup an office object"""
-    office_data = {
-        "country": "Poland",
-        "city": "Kraków",
-        "street": "Grodzka",
-        "number": "12A",
-        "phone": "+48501928348"
-    }
 
     response = client.post("/office", json=office_data)
     assert response.status_code == 201
@@ -25,7 +26,7 @@ def test_create_employee_success(client, setup_office):
     """Create an employee object"""
     office_id = setup_office[0]["id"]
 
-    employee_data = {
+    employee_data_1 = {
         "name": "Jan",
         "surname": "Kowalski",
         "email": "j.kowalski@example.com",
@@ -33,7 +34,7 @@ def test_create_employee_success(client, setup_office):
         "salary": "5000"
     }
 
-    response = client.post("/employees", json=employee_data)
+    response = client.post("/employees", json=employee_data_1)
 
     assert response.status_code == 201
 
@@ -53,14 +54,14 @@ def test_get_employees_returns_only_current_test_data(client, setup_office):
     response_empty = client.get("/employees/")
     assert len(response_empty.json()) == 0
 
-    employee_data_1 = {
+    employee_data_2 = {
         "name": "Anna",
         "surname": "Nowak",
         "email": "anna.nowak@example.com",
         "office_id": setup_office[0]["id"],
         "salary": "6000"
     }
-    employee_data_2 = {
+    employee_data_1 = {
         "name": "Jan",
         "surname": "Kowalski",
         "email": "j.kowalski@example.com",
@@ -74,12 +75,12 @@ def test_get_employees_returns_only_current_test_data(client, setup_office):
     response_get = client.get("/employees/")
     assert response_get.status_code == 200
     assert len(response_get.json()) == 2
-    assert response_get.json()[0]["name"] == "Anna"
-    assert response_get.json()[1]["name"] == "Jan"
+    assert response_get.json()[0]["name"] == "Jan"
+    assert response_get.json()[1]["name"] == "Anna"
 
 def test_get_employees_returns_only_one(client, setup_office):
     """Get a specific employee object"""
-    employee_data_1 = {
+    employee_data_2 = {
         "name": "Anna",
         "surname": "Nowak",
         "email": "anna.nowak@example.com",
@@ -87,7 +88,7 @@ def test_get_employees_returns_only_one(client, setup_office):
         "salary": "6000"
     }
 
-    response = client.post("/employees/", json=employee_data_1)
+    response = client.post("/employees/", json=employee_data_2)
     data = response.json()
 
     if isinstance(data, list):
@@ -99,7 +100,7 @@ def test_get_employees_returns_only_one(client, setup_office):
 
 def test_delete_employee_success(client, setup_office):
     """Delete an employee object"""
-    employee_data_1 = {
+    employee_data_2 = {
         "name": "Anna",
         "surname": "Nowak",
         "email": "anna.nowak@example.com",
@@ -107,7 +108,7 @@ def test_delete_employee_success(client, setup_office):
         "salary": "6000"
     }
 
-    response = client.post("/employees/", json=employee_data_1)
+    response = client.post("/employees/", json=employee_data_2)
     assert response.status_code == 201
 
     data = response.json()
@@ -119,7 +120,7 @@ def test_delete_employee_success(client, setup_office):
 
 def test_patch_employee_success(client, setup_office):
     """Patch an employee object"""
-    employee_data_1 = {
+    employee_data_2 = {
         "name": "Anna",
         "surname": "Nowak",
         "email": "anna.nowak@example.com",
@@ -127,7 +128,7 @@ def test_patch_employee_success(client, setup_office):
         "salary": "6000"
     }
 
-    response = client.post("/employees/", json=employee_data_1)
+    response = client.post("/employees/", json=employee_data_2)
     assert response.status_code == 201
 
     data = response.json()
